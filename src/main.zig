@@ -1,29 +1,57 @@
 const std = @import("std");
 const d = @import("deque.zig");
 
+const Token = struct { isOp: bool, value: usize };
+
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
     const allocator = gpa.allocator();
 
-    //const input = "1+2*4-3";
+    const input = "21+2*45687844-3";
 
-    var holding_stack = try d.Deque(u16).init(allocator);
+    // Setup stacks
+    var holding_stack = try d.Deque(Token).init(allocator);
     defer holding_stack.deinit();
 
-    var output_stack = try d.Deque(u16).init(allocator);
+    var output_stack = try d.Deque(Token).init(allocator);
     defer output_stack.deinit();
 
-    var solve_stack = try d.Deque(u16).init(allocator);
+    var solve_stack = try d.Deque(Token).init(allocator);
     defer solve_stack.deinit();
 
-    try execute(&holding_stack, &output_stack, &solve_stack);
+    // Parse input
+    var curNumb: usize = 0;
+    for (input) |c| {
+        if (isNumber(c)) {
+            curNumb = (curNumb * 10) + parseNumber(c);
+        } else {
+            try output_stack.pushBack(Token{ .isOp = false, .value = curNumb });
+            curNumb = 0;
+            try holding_stack.pushBack(Token{ .isOp = true, .value = c });
+        }
+    }
+    try output_stack.pushBack(Token{ .isOp = false, .value = curNumb });
 
-    std.debug.print("{}\n", .{solve_stack.get(0).?.*});
+    // Solve
+    for (output_stack.buf) |thing| {
+        std.debug.print("{} ", .{thing.value});
+    }
 }
 
-pub fn execute(holding_stack: *d.Deque(u16), output_stack: *d.Deque(u16), solve_stack: *d.Deque(u16)) !void {
-    try holding_stack.pushFront(8);
-    try output_stack.pushFront(69);
-    try solve_stack.pushFront(72);
-    try solve_stack.pushFront(100);
+pub fn isNumber(c: u8) bool {
+    if (c >= 48 and c <= 57) {
+        return true;
+    }
+    return false;
+}
+
+pub fn parseNumber(c: u8) u8 {
+    return c - 48;
+}
+
+pub fn isOperator(c: u8) bool {
+    if (c >= 42 and c <= 47) {
+        return true;
+    }
+    return false;
 }
