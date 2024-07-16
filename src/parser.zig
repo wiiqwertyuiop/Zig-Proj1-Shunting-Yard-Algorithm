@@ -12,7 +12,7 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
     var output_stack = try d.Deque(Token).init(allocator);
 
     // Parse input
-    var curNumb: usize = 0;
+    var curNumb: isize = 0;
     for (input) |c| {
 
         // Check if this is an operator
