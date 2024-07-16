@@ -14,32 +14,32 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
     // Parse input
     var curNumb: usize = 0;
     for (input) |c| {
-        if (c == ' ') {
-            // ignore spaces
-        } else if (isNumber(c)) {
-            curNumb = (curNumb * 10) + parseNumber(c);
-        } else {
+
+        // Check if this is an operator
+        const op = getOperator(c);
+        if (op != 0) {
             // Push number
             try output_stack.pushBack(Token{ .isOp = false, .value = curNumb });
             curNumb = 0;
 
             // Figure out operator
-            const newOp = getOperator(c);
 
             while (holding_stack.len() > 0) {
                 const last = holding_stack.back().?.*;
-                if (last.value < newOp) {
+                if (last.value < op) {
                     break;
                 }
                 const oldOp = holding_stack.popBack().?;
                 try output_stack.pushBack(oldOp);
             }
 
-            try holding_stack.pushBack(Token{ .isOp = true, .value = newOp });
+            try holding_stack.pushBack(Token{ .isOp = true, .value = op });
+        } else if (isNumber(c)) {
+            curNumb = (curNumb * 10) + parseNumber(c);
         }
     }
 
-    // Drain anything remaining
+    // Flush anything remaining
     try output_stack.pushBack(Token{ .isOp = false, .value = curNumb });
     while (holding_stack.len() > 0) {
         const op = holding_stack.popBack().?;

@@ -8,16 +8,16 @@ pub fn solve(rpn: *d.Deque(global.Token)) !usize {
     defer solve_stack.deinit();
 
     while (rpn.len() > 0) {
-        var token = rpn.popFront();
-        if (token != null and token.?.isOp) {
+        var token = rpn.popFront().?;
+        if (token.isOp) {
             // Handle operator
             // TODO: ERROR
             const right = solve_stack.popBack().?;
             const left = solve_stack.popBack().?;
             // Execute operator and generate new token
-            token = executeOperator(left, right, token.?.value);
+            token = executeOperator(left, right, token.value).?;
         }
-        try solve_stack.pushBack(token.?);
+        try solve_stack.pushBack(token);
     }
     // The remaning item in the solve stack is the result
     return solve_stack.back().?.*.value;
