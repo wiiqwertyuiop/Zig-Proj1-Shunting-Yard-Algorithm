@@ -17,16 +17,16 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
 
         // Check if this is an operator
         const op = getOperator(c);
-        if (op != 0) {
+        if (op.isOp != 0) {
             // Push number
-            try output_stack.pushBack(Token{ .isOp = false, .value = curNumb });
+            try output_stack.pushBack(Token{ .isOp = 0, .value = curNumb });
             curNumb = 0;
 
             // If there are higher priority operators already on the stack...
             // move from holding -> output stack
             while (holding_stack.len() > 0) {
                 const last = holding_stack.back().?.*;
-                if (last.value < op) {
+                if (last.isOp < op.isOp) {
                     // Take precedence if we are a higher priority operator
                     break;
                 }
@@ -36,7 +36,7 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
             }
 
             // Push operator to holding stack
-            try holding_stack.pushBack(Token{ .isOp = true, .value = op });
+            try holding_stack.pushBack(op);
         } else if (isNumber(c)) {
             // Otherwise handle number
             curNumb = (curNumb * 10) + parseNumber(c);
@@ -44,7 +44,7 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
     }
 
     // Flush anything remaining
-    try output_stack.pushBack(Token{ .isOp = false, .value = curNumb });
+    try output_stack.pushBack(Token{ .isOp = 0, .value = curNumb });
     while (holding_stack.len() > 0) {
         const op = holding_stack.popBack().?;
         try output_stack.pushBack(op);
@@ -64,23 +64,23 @@ pub fn parseNumber(c: u8) u8 {
     return c - 48;
 }
 
-pub fn getOperator(c: u8) u8 {
+pub fn getOperator(c: u8) Token {
     switch (c) {
         '/' => {
-            return 4;
+            return Token{ .isOp = 3, .value = 4 };
         },
         '*' => {
-            return 3;
+            return Token{ .isOp = 3, .value = 3 };
         },
         '+' => {
-            return 2;
+            return Token{ .isOp = 2, .value = 2 };
         },
         '-' => {
-            return 1;
+            return Token{ .isOp = 2, .value = 1 };
         },
         else => {
             // TODO: ERROR
-            return 0;
+            return Token{ .isOp = 0, .value = 0 };
         },
     }
 }
