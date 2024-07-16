@@ -19,9 +19,10 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
         // Handle raw numbers
         if (isNumber(c)) {
             if (curNumb == null) {
-                curNumb = 0;
+                curNumb = parseNumber(c);
+            } else {
+                curNumb = (curNumb.? * 10) + parseNumber(c);
             }
-            curNumb = (curNumb.? * 10) + parseNumber(c);
             continue;
         }
 
