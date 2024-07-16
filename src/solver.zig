@@ -39,7 +39,6 @@ pub fn executeOperator(left: Token, right: Token, op: isize) ?Token {
             return Token{ .isOp = false, .value = (left.value + right.value) };
         },
         1 => {
-            std.debug.print("left: {}, right: {}\n", .{ left.value, right.value });
             return Token{ .isOp = false, .value = (left.value - right.value) };
         },
         else => {
