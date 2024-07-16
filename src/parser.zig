@@ -67,16 +67,16 @@ pub fn parseNumber(c: u8) u8 {
 pub fn getOperator(c: u8) Token {
     switch (c) {
         '/' => {
-            return Token{ .isOp = 3, .value = 4 };
+            return Token{ .isOp = 3, .value = '/' };
         },
         '*' => {
-            return Token{ .isOp = 3, .value = 3 };
+            return Token{ .isOp = 3, .value = '*' };
         },
         '+' => {
-            return Token{ .isOp = 2, .value = 2 };
+            return Token{ .isOp = 2, .value = '+' };
         },
         '-' => {
-            return Token{ .isOp = 2, .value = 1 };
+            return Token{ .isOp = 2, .value = '-' };
         },
         else => {
             // TODO: ERROR

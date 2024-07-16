@@ -29,16 +29,16 @@ pub fn solve(rpn: *d.Deque(global.Token)) !isize {
 
 pub fn executeOperator(left: Token, right: Token, op: isize) ?Token {
     switch (op) {
-        4 => {
+        '/' => {
             return Token{ .isOp = 0, .value = @divExact(left.value, right.value) };
         },
-        3 => {
+        '*' => {
             return Token{ .isOp = 0, .value = (left.value * right.value) };
         },
-        2 => {
+        '+' => {
             return Token{ .isOp = 0, .value = (left.value + right.value) };
         },
-        1 => {
+        '-' => {
             return Token{ .isOp = 0, .value = (left.value - right.value) };
         },
         else => {

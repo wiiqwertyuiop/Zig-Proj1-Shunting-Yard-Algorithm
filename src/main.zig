@@ -3,7 +3,7 @@ const parser = @import("parser.zig");
 const solver = @import("solver.zig");
 
 pub fn main() !void {
-    const input = "1 + 2 * 4 - 3";
+    const input = "2 + 2 * 4 - 3";
     std.debug.print("Input: {s}\n", .{input});
 
     // Parse input to RPN
