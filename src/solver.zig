@@ -12,7 +12,7 @@ pub fn solve(rpn: *d.Deque(global.Token)) !isize {
     while (rpn.len() > 0) {
         var token = rpn.popFront().?;
         // Handle operators
-        if (token.isOp != 0) {
+        if (token.id != 0) {
             // Handle operator
             // TODO: ERROR
             const right = solve_stack.popBack().?;
@@ -30,16 +30,16 @@ pub fn solve(rpn: *d.Deque(global.Token)) !isize {
 pub fn executeOperator(left: Token, right: Token, op: isize) ?Token {
     switch (op) {
         '/' => {
-            return Token{ .isOp = 0, .value = @divExact(left.value, right.value) };
+            return Token{ .id = 0, .value = @divExact(left.value, right.value) };
         },
         '*' => {
-            return Token{ .isOp = 0, .value = (left.value * right.value) };
+            return Token{ .id = 0, .value = (left.value * right.value) };
         },
         '+' => {
-            return Token{ .isOp = 0, .value = (left.value + right.value) };
+            return Token{ .id = 0, .value = (left.value + right.value) };
         },
         '-' => {
-            return Token{ .isOp = 0, .value = (left.value - right.value) };
+            return Token{ .id = 0, .value = (left.value - right.value) };
         },
         else => {
             // TODO: ERROR
