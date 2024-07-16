@@ -9,6 +9,7 @@ pub fn solve(rpn: *d.Deque(global.Token)) !usize {
 
     while (rpn.len() > 0) {
         var token = rpn.popFront().?;
+        // Handle operators
         if (token.isOp) {
             // Handle operator
             // TODO: ERROR
@@ -17,6 +18,7 @@ pub fn solve(rpn: *d.Deque(global.Token)) !usize {
             // Execute operator and generate new token
             token = executeOperator(left, right, token.value).?;
         }
+        // Push token to solve stack
         try solve_stack.pushBack(token);
     }
     // The remaning item in the solve stack is the result

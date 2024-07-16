@@ -22,19 +22,23 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
             try output_stack.pushBack(Token{ .isOp = false, .value = curNumb });
             curNumb = 0;
 
-            // Figure out operator
-
+            // If there are higher priority operators already on the stack...
+            // move from holding -> output stack
             while (holding_stack.len() > 0) {
                 const last = holding_stack.back().?.*;
                 if (last.value < op) {
+                    // Take precedence if we are a higher priority operator
                     break;
                 }
+                // Move from holding -> output stack
                 const oldOp = holding_stack.popBack().?;
                 try output_stack.pushBack(oldOp);
             }
 
+            // Push operator to holding stack
             try holding_stack.pushBack(Token{ .isOp = true, .value = op });
         } else if (isNumber(c)) {
+            // Otherwise handle number
             curNumb = (curNumb * 10) + parseNumber(c);
         }
     }
