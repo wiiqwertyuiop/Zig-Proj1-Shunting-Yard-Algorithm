@@ -10,19 +10,19 @@ pub fn main() !void {
     const input = "21+70*10-80";
 
     // Parse input->output
-    const output_stack = try parseInput(input);
-    defer output_stack.deinit();
+    const rpn = try reversePolishNotation(input);
+    defer rpn.deinit();
 
     // Solve
     var solve_stack = try d.Deque(Token).init(allocator);
     defer solve_stack.deinit();
 
-    for (output_stack.buf) |c| {
+    for (rpn.buf) |c| {
         std.debug.print("{} : ", .{c.value});
     }
 }
 
-pub fn parseInput(input: *const [11:0]u8) !d.Deque(Token) {
+pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
 
     // Setup stacks
     var holding_stack = try d.Deque(Token).init(allocator);
@@ -42,11 +42,10 @@ pub fn parseInput(input: *const [11:0]u8) !d.Deque(Token) {
 
             // Figure out operator
             const newOp = getOperator(c);
-            const holding_stack_len = holding_stack.len();
+            const last = holding_stack.back();
 
-            if (holding_stack_len > 0) {
-                const last = holding_stack.get(holding_stack_len - 1).?.*;
-                if (last.value > newOp) {
+            if (last != null) {
+                if (last.?.*.value > newOp) {
                     while (holding_stack.len() > 0) {
                         const oldOp = holding_stack.popBack().?;
                         try output_stack.pushBack(oldOp);
