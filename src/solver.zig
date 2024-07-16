@@ -1,6 +1,7 @@
 const d = @import("other/deque.zig");
 const global = @import("global.zig");
 const Token = global.Token;
+const TokenId = global.TokenId;
 const allocator = global.allocator;
 
 const std = @import("std");
@@ -12,7 +13,7 @@ pub fn solve(rpn: *d.Deque(global.Token)) !isize {
     while (rpn.len() > 0) {
         var token = rpn.popFront().?;
         // Handle operators
-        if (token.id != 0) {
+        if (token.id != TokenId.noOperation) {
             // Handle operator
             // TODO: ERROR
             const right = solve_stack.popBack().?;
@@ -27,19 +28,20 @@ pub fn solve(rpn: *d.Deque(global.Token)) !isize {
     return solve_stack.back().?.*.value;
 }
 
+// Convert operation to interger
 pub fn executeOperator(left: Token, right: Token, op: isize) ?Token {
     switch (op) {
         '/' => {
-            return Token{ .id = 0, .value = @divExact(left.value, right.value) };
+            return Token{ .id = TokenId.noOperation, .value = @divExact(left.value, right.value) };
         },
         '*' => {
-            return Token{ .id = 0, .value = (left.value * right.value) };
+            return Token{ .id = TokenId.noOperation, .value = (left.value * right.value) };
         },
         '+' => {
-            return Token{ .id = 0, .value = (left.value + right.value) };
+            return Token{ .id = TokenId.noOperation, .value = (left.value + right.value) };
         },
         '-' => {
-            return Token{ .id = 0, .value = (left.value - right.value) };
+            return Token{ .id = TokenId.noOperation, .value = (left.value - right.value) };
         },
         else => {
             // TODO: ERROR
