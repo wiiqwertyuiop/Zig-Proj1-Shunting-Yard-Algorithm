@@ -1,6 +1,6 @@
 # The Shunting Yard Algorithm
 
-Zig implementation of "The Shunting Yard Algorithm".
+Zig implementation of "The Shunting Yard Algorithm". First time using Zig!
 
 ## Supports
 
