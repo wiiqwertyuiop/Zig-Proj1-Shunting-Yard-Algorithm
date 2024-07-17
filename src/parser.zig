@@ -14,7 +14,7 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
 
     // Parse input
     var curNumb: ?isize = null;
-    var lastCharWasOp = true;
+    var lastCharWasOp = true; // Start this off as true, consider the "start" an OP. (this is so we can handle when the first character is a negative e.g "-3 + 2")
     var numberIsNegative = false;
 
     for (input) |c| {
