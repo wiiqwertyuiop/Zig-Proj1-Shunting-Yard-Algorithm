@@ -3,7 +3,8 @@ const parser = @import("parser.zig");
 const solver = @import("solver.zig");
 
 pub fn main() !void {
-    const input = "3 + 500 / 500 - 3 * 69 + 203";
+    // 3 + 500 / 500 - 3 * 69 + 203
+    const input = "1 + (-2) + 4 * 2 + (2 - 3 + 2 + 5) + 10";
     std.debug.print("Input: {s}\n", .{input});
 
     // Parse input to RPN

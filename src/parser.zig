@@ -58,19 +58,21 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
             curNumb = null;
         }
 
-        // If there are higher priority operators already on the stack...
-        // move from holding -> output stack
         while (holding_stack.len() > 0) {
             const last = holding_stack.back().?.*;
-            if (op.?.id != TokenId.closed_enclosure and (op.?.id == TokenId.open_enclosure or @intFromEnum(last.id) < @intFromEnum(op.?.id))) {
-                // Take precedence if we are a opening bracket/parentheses
-                // or higher ID
+            // If:
+            // The new operator ID is greater than the current ID already on the stack AND this is not a closing enclosure...
+            // OR if this is an open enclosure...
+            //
+            // We can break out of the loop and just add the current operator to the stack
+            if ((@intFromEnum(last.id) < @intFromEnum(op.?.id) and op.?.id != TokenId.closed_enclosure) or op.?.id == TokenId.open_enclosure) {
                 break;
             }
-            // Move from holding -> output stack
+            // Otherwise we need to move stuff from the holding stack -> output stack
             const oldOp = holding_stack.popBack().?;
             if (oldOp.id == TokenId.open_enclosure) {
-                // Don't add the open enclosure to the output stack
+                // If this is the end of a enclosure block, break out
+                // basically move everything between ( ) to the output stack
                 break;
             }
             try output_stack.pushBack(oldOp);
@@ -81,7 +83,7 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
             continue;
         }
 
-        // Push operator to holding stack
+        // Push all other operators to holding stack
         try holding_stack.pushBack(op.?);
 
         // Set flag
