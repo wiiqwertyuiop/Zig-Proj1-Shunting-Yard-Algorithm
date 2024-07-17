@@ -14,6 +14,9 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
 
     // Parse input
     var curNumb: ?isize = null;
+    var lastCharWasOp = false;
+    var numberIsNegative = false;
+
     for (input) |c| {
 
         // Handle raw numbers
@@ -23,6 +26,11 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
             } else {
                 curNumb = (curNumb.? * 10) + parseNumber(c);
             }
+            if (numberIsNegative) {
+                curNumb.? *= -1;
+                numberIsNegative = false;
+            }
+            lastCharWasOp = false;
             continue;
         }
 
@@ -33,6 +41,16 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
             continue;
         }
         // Otherwise handle operators
+
+        // Handle negative numbers (e.g. "2 + -2")
+        if (lastCharWasOp) {
+            if (op.?.id == TokenId.addition) {
+                if (op.?.value == '-') {
+                    numberIsNegative = true;
+                }
+                continue;
+            }
+        }
 
         if (curNumb != null) {
             // Push number if we have one
@@ -65,6 +83,9 @@ pub fn reversePolishNotation(input: []const u8) !d.Deque(Token) {
 
         // Push operator to holding stack
         try holding_stack.pushBack(op.?);
+
+        // Set flag
+        lastCharWasOp = true;
     }
 
     // Flush anything remaining
